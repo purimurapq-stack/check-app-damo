@@ -737,20 +737,27 @@ function scanQRCode() {
 }
 
 function handleQRCode(data) {
-  /*
-    今回は通信品質デモのため、
-    読み取ったQRコードの内容に関係なく
-    500円の支払い確認画面を表示する。
 
-    モニターには既存のGitHub PagesのURLを
-    QRコード化して表示すればOK。
-  */
+  // モニターに表示するQRコードのURL
+  const expectedURL =
+    "https://purimurapq-stack.github.io/tt-paymant-damo/";
 
+  // QRコードの内容を確認
+  if (data.trim() !== expectedURL) {
+
+    document.getElementById("scanStatus").textContent =
+      "このQRコードは使用できません。";
+
+    return;
+  }
+
+  // 正しいQRコードを読み取った場合
   stopCamera();
 
   document.getElementById("scanStatus").textContent =
     "QRコードを読み取りました";
 
+  // 支払い確認画面を表示
   showScreen("payment");
 }
 
