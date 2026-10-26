@@ -736,29 +736,38 @@ function scanQRCode() {
   scanFrame = requestAnimationFrame(scanQRCode);
 }
 
+let qrProcessing = false;
+
 function handleQRCode(data) {
+
+  // 二重読み取り防止
+  if (qrProcessing) return;
 
   // モニターに表示するQRコードのURL
   const expectedURL =
     "https://purimurapq-stack.github.io/tt-paymant-damo/";
 
-  // QRコードの内容を確認
+  // 正しいQRコードか確認
   if (data.trim() !== expectedURL) {
-
     document.getElementById("scanStatus").textContent =
       "このQRコードは使用できません。";
-
     return;
   }
 
-  // 正しいQRコードを読み取った場合
-  stopCamera();
+  // 読み取り成功
+  qrProcessing = true;
 
   document.getElementById("scanStatus").textContent =
-    "QRコードを読み取りました";
+    "QRコードを読み取りました。確認中...";
 
-  // 支払い確認画面を表示
-  showScreen("payment");
+  // カメラを停止
+  stopCamera();
+
+  // 0.5秒待ってから支払い確認画面へ
+  setTimeout(() => {
+    showScreen("payment");
+    qrProcessing = false;
+  }, 500);
 }
 
 function stopCamera() {
